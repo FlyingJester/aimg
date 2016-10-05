@@ -23,7 +23,7 @@
  */
 
 #include "image.h"
-#include "platform/bufferfile.h"
+#include "../bufferfile/bufferfile.h"
 #include <string.h>
 #include <stdlib.h>
 #include <png.h>
@@ -32,7 +32,7 @@ struct aimg_png_buffer { void *data; int size; unsigned at; };
 
 static void AImg_PNGReadCallback(png_struct *png_ctx, png_byte *data, png_size_t length){
     struct aimg_png_buffer *data_buffer = png_get_io_ptr(png_ctx);
-    if(data_buffer->at + length > (unsigned)data_buffer->size){
+    if(data_buffer->at + length > data_buffer->size){
         png_error(png_ctx, "Unexpected EOF");
         return;
     }
@@ -41,15 +41,30 @@ static void AImg_PNGReadCallback(png_struct *png_ctx, png_byte *data, png_size_t
 }
 
 unsigned AImg_LoadPNG(struct AImg_Image *to, const char *path){
+	void *data;
+	int size;
+	
+    if(!to || !path)
+        return AIMG_LOADPNG_IS_NULL;
+	
+	data = BufferFile(path, &size);
+    if(data == NULL)
+        return AIMG_LOADPNG_NO_FILE;
+	
+	{
+		const int r = AImg_LoadPNGMem(to, data, size);
+		FreeBufferFile(data, size);
+		return r;
+	}
+}
+
+unsigned AImg_LoadPNGMem(struct AImg_Image *to, const void *data, unsigned size){
 
     struct aimg_png_buffer data_buffer;
     unsigned char color_type, bit_depth;
-    int interlaced;
+    int interlaced, num_passes;
     png_struct *png_ctx;
     png_info *png_info;
-
-    if(!to || !path)
-        return AIMG_LOADPNG_IS_NULL;
 
     memset(&data_buffer, 0, sizeof(struct aimg_png_buffer));
 

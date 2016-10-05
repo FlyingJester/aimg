@@ -23,7 +23,7 @@
  */
 
 #include "image.h"
-#include "platform/bufferfile.h"
+#include "../bufferfile/bufferfile.h"
 #include "memset_pattern4.h"
 #include <stdint.h>
 #include <stdlib.h>
@@ -192,15 +192,27 @@ unsigned AImg_LoadTGA(struct AImg_Image *to, const char *path){
         return AIMG_LOADPNG_IS_NULL;
     
     data = BufferFile(path, &size);
-    
+	
     if(!data){
         return AIMG_LOADPNG_NO_FILE;
     }
-    else if(size < 0x12){
+	else if(size < 0x12){
         FreeBufferFile(data, size);  
         return AIMG_LOADPNG_BADFILE;
     }
-    else{
+	
+	{
+		const unsigned r = AImg_LoadTGAMem(to, data, size);
+        FreeBufferFile(data, size);
+		return r;
+	}
+}
+
+unsigned AImg_LoadTGAMem(struct AImg_Image *to, const void *data, unsigned size){    
+    if(!to || !data || size <= 0x12)
+        return AIMG_LOADPNG_IS_NULL;
+    
+    {
         struct AImg_TGAHeader header;
         aimg_tga_pixel_reader pixel_reader;
 
@@ -239,8 +251,6 @@ unsigned AImg_LoadTGA(struct AImg_Image *to, const char *path){
                 aimg_tga_read_raw(to, 0, 0, field, pixel_reader, 0);
             }
         }
-        
-        FreeBufferFile(data, size);   
 
         /* TGA is upside down. So we need to reverse it. */
         if(header.flipped_vertically)
