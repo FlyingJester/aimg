@@ -68,7 +68,8 @@ unsigned AImg_LoadPNGMem(struct AImg_Image *to, const void *data, unsigned size)
 
     memset(&data_buffer, 0, sizeof(struct aimg_png_buffer));
 
-    data_buffer.data = BufferFile(path, &data_buffer.size);
+    data_buffer.data = data;
+    data_buffer.size = size;
     if(!data_buffer.data)
         return AIMG_LOADPNG_NO_FILE;
 

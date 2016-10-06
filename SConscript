@@ -8,6 +8,8 @@ src = [
     "save_tga.c"
 ]
 
+environment.Append(CPPDEFINES = ["AIMG_EXPORTS"])
+
 aimg = environment.StaticLibrary("aimg", src, LIBS = ["png"])
 
 Return("aimg")
