@@ -235,7 +235,6 @@ unsigned AImg_LoadTGAMem(struct AImg_Image *to, const void *data, unsigned size)
                 pixel_reader = aimg_read_tga_32;
                 break;
             default:
-                FreeBufferFile(data, size);
                 return AIMG_LOADPNG_NFORMAT;
         }
 

@@ -76,6 +76,8 @@ AIMG_API void AImg_FlipImageVertically(const struct AImg_Image *from, struct AIm
  * Returns 0 on success
  */
 AIMG_API unsigned AImg_LoadAuto(struct AImg_Image *to, const char *path);
+AIMG_API unsigned AImg_LoadPNGMem(struct AImg_Image *to, const void *data, unsigned size);
+AIMG_API unsigned AImg_LoadTGAMem(struct AImg_Image *to, const void *data, unsigned size);
 AIMG_API unsigned AImg_LoadPNG(struct AImg_Image *to, const char *path);
 AIMG_API unsigned AImg_LoadTGA(struct AImg_Image *to, const char *path);
 AIMG_API unsigned AImg_LoadArctic(struct AImg_Image *to, const char *path);
