@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <png.h>
 
-struct aimg_png_buffer { void *data; int size; unsigned at; };
+struct aimg_png_buffer { const void *data; unsigned size, at; };
 
 static void AImg_PNGReadCallback(png_struct *png_ctx, png_byte *data, png_size_t length){
     struct aimg_png_buffer *data_buffer = png_get_io_ptr(png_ctx);
@@ -62,7 +62,7 @@ unsigned AImg_LoadPNGMem(struct AImg_Image *to, const void *data, unsigned size)
 
     struct aimg_png_buffer data_buffer;
     unsigned char color_type, bit_depth;
-    int interlaced, num_passes;
+    int interlaced;
     png_struct *png_ctx;
     png_info *png_info;
 
@@ -177,8 +177,6 @@ start_pixel_mux:
         else if(row_buf)
             free(row_buf);
     }
-
-    FreeBufferFile(data_buffer.data, data_buffer.size);
 
     return AIMG_LOADPNG_SUCCESS;
 
