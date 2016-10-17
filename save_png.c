@@ -25,7 +25,6 @@
 #include "image.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
 #include <png.h>
 
 unsigned AImg_SavePNG(const struct AImg_Image *from, const char *path){
