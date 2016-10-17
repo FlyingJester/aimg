@@ -73,7 +73,7 @@ unsigned AImg_LoadPNGMem(struct AImg_Image *to, const void *data, unsigned size)
     if(!data_buffer.data)
         return AIMG_LOADPNG_NO_FILE;
 
-    if(png_sig_cmp(data_buffer.data, 0, 8)!=0)
+    if(png_sig_cmp((void*)data_buffer.data, 0, 8)!=0)
         return AIMG_LOADPNG_BADFILE;
 
     if(!(png_ctx = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL))){
